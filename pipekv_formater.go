@@ -14,31 +14,37 @@ var (
 
 type pipeKvFormatter struct{}
 
-func (l *pipeKvFormatter) Format(entry *Entry) ([]byte, error) {
-	b := &bytes.Buffer{}
+func (l *pipeKvFormatter) Format(entry *Entry) (*bytes.Buffer, error) {
+	buf := getBuffer()
+	tag := "_undef"
 
-	fmt.Fprintf(b, "[%s][%s][%d][%s:%d][tag=%s][",
-		entry.Level.String(),
-		entry.Time.Format("2006-01-02 15:04:05.000"),
+	if entry.Tag != "" {
+		tag = entry.Tag
+	}
+
+	fmt.Fprintf(buf, "[%s][%s][%d][%s:%d]%s||msg=%s||",
+		entry.Level,
+		entry.Time.Format("2006-01-02T15:04:05.000Z07:00"),
 		gls.GoID(),
 		path.Base(entry.File),
 		entry.Line,
+		tag,
 		entry.Msg,
 	)
 
 	for i := 0; i < len(entry.KeyVals); i += 2 {
 		key, val := entry.KeyVals[i], entry.KeyVals[i+1]
-		b.WriteString(toString(key))
-		b.WriteString("=")
-		fmt.Fprint(b, val)
-		b.WriteString("||")
+		buf.WriteString(toString(key))
+		buf.WriteString("=")
+		fmt.Fprint(buf, val)
+		buf.WriteString("||")
 	}
 
 	if len(entry.KeyVals) > 0 {
-		b.Truncate(b.Len() - 2)
+		buf.Truncate(buf.Len() - 2)
 	}
 
-	b.WriteString("]\n")
+	buf.WriteString("\n")
 
-	return b.Bytes(), nil
+	return buf, nil
 }

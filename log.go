@@ -5,83 +5,53 @@ import (
 	"os"
 )
 
-const (
-	keyLogContext = int(0xf7f7f7f7)
-)
+var DefaultLogger *Logger = NewLogger(NewStdAppender(PipeKVFormatter))
 
-var (
-	mctx                    = SetContext(context.Background(), "module", "log")
-	RootContext *LogContext = NewLogContext()
-	logger      Logger      = NewStdLogger(KVFormatter)
-	level                   = TraceLevel
-)
-
-func SetLogger(l Logger) {
-	logger = l
-}
-
-func GetLogger() Logger {
-	return logger
-}
-
-func SetLevelByName(lvlName LevelName) {
-	level = lvlName.ToLevel()
+func SetLevelByName(levelName LevelName) {
+	DefaultLogger.SetLevel(levelName.ToLevel())
 }
 
 func GetLevel() Level {
-	return level
+	return DefaultLogger.GetLevel()
 }
 
-func Enabled(lvl Level) bool {
-	return lvl >= level
+func Enabled(level Level) bool {
+	return DefaultLogger.Enabled(level)
 }
 
-func getLogContext(ctx context.Context) *LogContext {
-	if logctx, ok := ctx.Value(keyLogContext).(*LogContext); ok {
-		return logctx
+func With(keyvals ...interface{}) *Logger {
+	if len(keyvals) == 0 {
+		return DefaultLogger
 	}
-	return RootContext
+
+	return DefaultLogger.With(keyvals...)
 }
 
-// 为当前context绑定日志上下文变量
-func SetContext(ctx context.Context, keyvals ...interface{}) context.Context {
-	logCtx := getLogContext(ctx).With(keyvals...)
-	return context.WithValue(ctx, keyLogContext, logCtx)
+func Tag(tag string) *Logger {
+	return DefaultLogger.Tag(tag)
 }
 
 func Trace(ctx context.Context, msg string, keyvals ...interface{}) {
-	if Enabled(TraceLevel) {
-		logger.Log(getLogContext(ctx).newEntry(TraceLevel, msg, keyvals))
-	}
+	DefaultLogger.Trace(ctx, msg, keyvals...)
 }
 
 func Debug(ctx context.Context, msg string, keyvals ...interface{}) {
-	if Enabled(DebugLevel) {
-		logger.Log(getLogContext(ctx).newEntry(DebugLevel, msg, keyvals))
-	}
+	DefaultLogger.Debug(ctx, msg, keyvals...)
 }
 
 func Info(ctx context.Context, msg string, keyvals ...interface{}) {
-	if Enabled(InfoLevel) {
-		logger.Log(getLogContext(ctx).newEntry(InfoLevel, msg, keyvals))
-	}
+	DefaultLogger.Info(ctx, msg, keyvals...)
 }
 
 func Warning(ctx context.Context, msg string, keyvals ...interface{}) {
-	if Enabled(WarningLevel) {
-		logger.Log(getLogContext(ctx).newEntry(WarningLevel, msg, keyvals))
-	}
+	DefaultLogger.Warning(ctx, msg, keyvals...)
 }
 
 func Error(ctx context.Context, msg string, keyvals ...interface{}) {
-	if Enabled(ErrorLevel) {
-		logger.Log(getLogContext(ctx).newEntry(ErrorLevel, msg, keyvals))
-	}
+	DefaultLogger.Error(ctx, msg, keyvals...)
 }
 
 func Fatal(ctx context.Context, msg string, keyvals ...interface{}) {
-	if Enabled(FatalLevel) {
-		logger.Log(getLogContext(ctx).newEntry(FatalLevel, msg, keyvals))
-	}
+	DefaultLogger.Fatal(ctx, msg, keyvals...)
 	os.Exit(-1)
 }

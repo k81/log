@@ -5,48 +5,49 @@ type Level uint8
 type LevelName string
 
 const (
-	TraceLevel Level = iota
-	DebugLevel
-	InfoLevel
-	WarningLevel
-	ErrorLevel
-	FatalLevel
+	LevelTrace Level = 1 << iota
+	LevelDebug
+	LevelInfo
+	LevelWarning
+	LevelError
+	LevelFatal
+	LevelMask = 0xFF
 )
 
-func (lvl Level) String() string {
-	ln := "UNKNOWN"
-	switch lvl {
-	case TraceLevel:
-		ln = "TRACE"
-	case DebugLevel:
-		ln = "DEBUG"
-	case InfoLevel:
-		ln = "INFO"
-	case WarningLevel:
-		ln = "WARNING"
-	case ErrorLevel:
-		ln = "ERROR"
-	case FatalLevel:
-		ln = "FATAL"
+func (level Level) String() string {
+	levelName := "UNKNOWN"
+	switch level {
+	case LevelTrace:
+		levelName = "TRACE"
+	case LevelDebug:
+		levelName = "DEBUG"
+	case LevelInfo:
+		levelName = "INFO"
+	case LevelWarning:
+		levelName = "WARNING"
+	case LevelError:
+		levelName = "ERROR"
+	case LevelFatal:
+		levelName = "FATAL"
 	}
-	return ln
+	return levelName
 }
 
-func (ln LevelName) ToLevel() Level {
-	lvl := InfoLevel
-	switch ln {
+func (levelName LevelName) ToLevel() Level {
+	level := LevelInfo
+	switch levelName {
 	case "TRACE":
-		lvl = TraceLevel
+		level = LevelTrace
 	case "DEBUG":
-		lvl = DebugLevel
+		level = LevelDebug
 	case "INFO":
-		lvl = InfoLevel
+		level = LevelInfo
 	case "WARNING":
-		lvl = WarningLevel
+		level = LevelWarning
 	case "ERROR":
-		lvl = ErrorLevel
+		level = LevelError
 	case "FATAL":
-		lvl = FatalLevel
+		level = LevelFatal
 	}
-	return lvl
+	return level
 }

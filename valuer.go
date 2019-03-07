@@ -1,18 +1,18 @@
 package log
 
-import "time"
+import "context"
 
 // A Valuer generates a log value. When passed to Context.With in a value
 // element (odd indexes), it represents a dynamic value which is re-evaluated
 // with each log event.
-type Valuer func() interface{}
+type Valuer func(context.Context) interface{}
 
 // bindValues replaces all value elements (odd indexes) containing a Valuer
 // with their generated value.
-func bindValues(keyvals []interface{}) {
+func bindValues(ctx context.Context, keyvals []interface{}) {
 	for i := 1; i < len(keyvals); i += 2 {
 		if v, ok := keyvals[i].(Valuer); ok {
-			keyvals[i] = v()
+			keyvals[i] = v(ctx)
 		}
 	}
 }
@@ -27,20 +27,3 @@ func containsValuer(keyvals []interface{}) bool {
 	}
 	return false
 }
-
-// Timestamp returns a Valuer that invokes the underlying function when bound,
-// returning a time.Time. Users will probably want to use DefaultTimestamp or
-// DefaultTimestampUTC.
-func Timestamp(t func() time.Time) Valuer {
-	return func() interface{} { return t() }
-}
-
-var (
-	// DefaultTimestamp is a Valuer that returns the current wallclock time,
-	// respecting time zones, when bound.
-	DefaultTimestamp Valuer = func() interface{} { return time.Now().Format(time.RFC3339) }
-
-	// DefaultTimestampUTC is a Valuer that returns the current time in UTC
-	// when bound.
-	DefaultTimestampUTC Valuer = func() interface{} { return time.Now().UTC().Format(time.RFC3339) }
-)

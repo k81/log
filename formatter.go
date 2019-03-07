@@ -1,12 +1,13 @@
 package log
 
 import (
+	"bytes"
 	"fmt"
 	"reflect"
 )
 
 type Formatter interface {
-	Format(*Entry) ([]byte, error)
+	Format(*Entry) (*bytes.Buffer, error)
 }
 
 func toString(k interface{}) (str string) {

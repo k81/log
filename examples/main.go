@@ -3,25 +3,33 @@ package main
 import (
 	"context"
 
-	"github.com/k81/kate/log"
+	"github.com/k81/log"
 )
 
 func foo(ctx context.Context) {
-	ctx = log.SetContext(ctx, "context", "foo")
+	logger := log.With("context", "foo")
 
-	log.Info(ctx, "foo called")
+	logger.Info(ctx, "foo called")
 }
 
 func bar(ctx context.Context) {
-	ctx = log.SetContext(ctx, "context", "bar")
+	logger := log.With("context", "bar")
 
-	log.Info(ctx, "bar called")
+	logger.Info(ctx, "bar called")
+}
+
+func helloworld(ctx context.Context) {
+	logger := log.With("context", "hello")
+	logger = logger.With("context", "world")
+	logger.Info(ctx, "this is hello world")
 }
 
 func main() {
-	ctx := log.SetContext(context.Background(), "module", "example")
+	ctx := context.TODO()
+
 	log.Info(ctx, "program started")
 	foo(ctx)
 	bar(ctx)
-	log.Info(ctx, "program exited")
+	helloworld(ctx)
+	log.Tag("__OK_TAG__").Info(ctx, "program exited")
 }
