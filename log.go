@@ -5,53 +5,61 @@ import (
 	"os"
 )
 
-var DefaultLogger *Logger = NewLogger(NewStdAppender(PipeKVFormatter))
+var defaultLogger *Logger = NewLogger(NewStdAppender(PipeKVFormatter))
+
+func SetLogger(logger *Logger) {
+	defaultLogger = logger
+}
+
+func GetLogger() *Logger {
+	return defaultLogger
+}
 
 func SetLevelByName(levelName LevelName) {
-	DefaultLogger.SetLevel(levelName.ToLevel())
+	defaultLogger.SetLevel(levelName.ToLevel())
 }
 
 func GetLevel() Level {
-	return DefaultLogger.GetLevel()
+	return defaultLogger.GetLevel()
 }
 
 func Enabled(level Level) bool {
-	return DefaultLogger.Enabled(level)
+	return defaultLogger.Enabled(level)
 }
 
 func With(keyvals ...interface{}) *Logger {
 	if len(keyvals) == 0 {
-		return DefaultLogger
+		return defaultLogger
 	}
 
-	return DefaultLogger.With(keyvals...)
+	return defaultLogger.With(keyvals...)
 }
 
 func Tag(tag string) *Logger {
-	return DefaultLogger.Tag(tag)
+	return defaultLogger.Tag(tag)
 }
 
 func Trace(ctx context.Context, msg string, keyvals ...interface{}) {
-	DefaultLogger.Trace(ctx, msg, keyvals...)
+	defaultLogger.Trace(ctx, msg, keyvals...)
 }
 
 func Debug(ctx context.Context, msg string, keyvals ...interface{}) {
-	DefaultLogger.Debug(ctx, msg, keyvals...)
+	defaultLogger.Debug(ctx, msg, keyvals...)
 }
 
 func Info(ctx context.Context, msg string, keyvals ...interface{}) {
-	DefaultLogger.Info(ctx, msg, keyvals...)
+	defaultLogger.Info(ctx, msg, keyvals...)
 }
 
 func Warning(ctx context.Context, msg string, keyvals ...interface{}) {
-	DefaultLogger.Warning(ctx, msg, keyvals...)
+	defaultLogger.Warning(ctx, msg, keyvals...)
 }
 
 func Error(ctx context.Context, msg string, keyvals ...interface{}) {
-	DefaultLogger.Error(ctx, msg, keyvals...)
+	defaultLogger.Error(ctx, msg, keyvals...)
 }
 
 func Fatal(ctx context.Context, msg string, keyvals ...interface{}) {
-	DefaultLogger.Fatal(ctx, msg, keyvals...)
+	defaultLogger.Fatal(ctx, msg, keyvals...)
 	os.Exit(-1)
 }
