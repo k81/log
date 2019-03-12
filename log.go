@@ -27,15 +27,16 @@ func Enabled(level Level) bool {
 	return defaultLogger.Enabled(level)
 }
 
-func With(keyvals ...interface{}) *Logger {
+func WithContext(ctx context.Context, keyvals ...interface{}) context.Context {
 	if len(keyvals) == 0 {
-		return defaultLogger
+		return ctx
 	}
 
-	return defaultLogger.With(keyvals...)
+	logCtx := getContext(ctx).With(keyvals...)
+	return context.WithValue(ctx, keyContext, logCtx)
 }
 
-func Tag(tag string) *Logger {
+func Tag(tag string) *TagLogger {
 	return defaultLogger.Tag(tag)
 }
 

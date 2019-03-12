@@ -7,29 +7,27 @@ import (
 )
 
 func foo(ctx context.Context) {
-	logger := log.With("context", "foo")
-
-	logger.Info(ctx, "foo called")
+	fctx := log.WithContext(ctx, "context", "foo")
+	log.Info(fctx, "foo called")
 }
 
 func bar(ctx context.Context) {
-	logger := log.With("context", "bar")
-
-	logger.Info(ctx, "bar called")
+	bctx := log.WithContext(ctx, "context", "bar")
+	log.Info(bctx, "bar called")
 }
 
 func helloworld(ctx context.Context) {
-	logger := log.With("context", "hello")
-	logger = logger.With("context", "world")
-	logger.Info(ctx, "this is hello world")
+	hctx := log.WithContext(ctx, "hello", "world")
+	log.Info(hctx, "this is hello world")
+	log.Tag("__supernova").Info(hctx, "unknown world")
 }
 
 func main() {
-	ctx := context.TODO()
+	mctx := context.Background()
 
-	log.Info(ctx, "program started")
-	foo(ctx)
-	bar(ctx)
-	helloworld(ctx)
-	log.Tag("__OK_TAG__").Info(ctx, "program exited")
+	log.Info(mctx, "program started")
+	foo(mctx)
+	bar(mctx)
+	helloworld(mctx)
+	log.Tag("__OK_TAG__").Info(mctx, "program exited")
 }
