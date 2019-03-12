@@ -19,13 +19,6 @@ func NewLogger(appenders ...Appender) *Logger {
 	}
 }
 
-func (logger *Logger) Tag(tag string) *TagLogger {
-	return &TagLogger{
-		Logger: logger,
-		Tag:    tag,
-	}
-}
-
 func (logger *Logger) GetLevel() Level {
 	return logger.level
 }
