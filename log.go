@@ -3,9 +3,13 @@ package log
 import (
 	"context"
 	"os"
+	"sync"
 )
 
-var defaultLogger *Logger = NewLogger(NewStdAppender(PipeKVFormatter))
+var (
+	defaultLogger *Logger = NewLogger(NewStdAppender(PipeKVFormatter))
+	tagLoggerPool         = &sync.Map{}
+)
 
 func SetLogger(logger *Logger) {
 	defaultLogger = logger
@@ -37,7 +41,14 @@ func WithContext(ctx context.Context, keyvals ...interface{}) context.Context {
 }
 
 func Tag(tag string) *TagLogger {
-	return defaultLogger.Tag(tag)
+	logger, ok := tagLoggerPool.Load(tag)
+	if ok {
+		return logger.(*TagLogger)
+	}
+
+	tagLogger := defaultLogger.Tag(tag)
+	tagLoggerPool.Store(tag, tagLogger)
+	return tagLogger
 }
 
 func Trace(ctx context.Context, msg string, keyvals ...interface{}) {
