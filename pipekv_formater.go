@@ -22,15 +22,20 @@ func (l *pipeKvFormatter) Format(entry *Entry) (*bytes.Buffer, error) {
 		tag = entry.Tag
 	}
 
-	fmt.Fprintf(buf, "[%s][%s][%d][%s:%d]%s||msg=%s||",
+	fmt.Fprintf(buf, "[%s][%s][%d][%s:%d]%s||",
 		entry.Level,
 		entry.Time.Format("2006-01-02T15:04:05.000Z07:00"),
 		gls.GoID(),
 		path.Base(entry.File),
 		entry.Line,
 		tag,
-		entry.Msg,
 	)
+
+	if entry.Msg != "" {
+		buf.WriteString("msg=")
+		buf.WriteString(entry.Msg)
+		buf.WriteString("||")
+	}
 
 	for i := 0; i < len(entry.KeyVals); i += 2 {
 		key, val := entry.KeyVals[i], entry.KeyVals[i+1]

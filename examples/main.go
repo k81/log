@@ -22,6 +22,10 @@ func helloworld(ctx context.Context) {
 	log.Tag("__supernova").Info(hctx, "unknown world")
 }
 
+func nomsg(ctx context.Context) {
+	log.Tag("__no_msg").Info(ctx, "", "k1", "v1")
+}
+
 func main() {
 	mctx := context.Background()
 
@@ -29,5 +33,6 @@ func main() {
 	foo(mctx)
 	bar(mctx)
 	helloworld(mctx)
+	nomsg(mctx)
 	log.Tag("__OK_TAG__").Info(mctx, "program exited")
 }
