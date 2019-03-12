@@ -8,6 +8,7 @@ import (
 var ErrMissingValue = errors.New("(MISSING)")
 
 type Entry struct {
+	Tag     string
 	Msg     string
 	File    string
 	Line    int

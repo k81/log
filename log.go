@@ -36,6 +36,10 @@ func WithContext(ctx context.Context, keyvals ...interface{}) context.Context {
 	return context.WithValue(ctx, keyContext, logCtx)
 }
 
+func Tag(tag string) *TagLogger {
+	return defaultLogger.Tag(tag)
+}
+
 func Trace(ctx context.Context, msg string, keyvals ...interface{}) {
 	defaultLogger.Trace(ctx, msg, keyvals...)
 }

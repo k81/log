@@ -16,13 +16,19 @@ type pipeKvFormatter struct{}
 
 func (l *pipeKvFormatter) Format(entry *Entry) (*bytes.Buffer, error) {
 	buf := getBuffer()
+	tag := "_undef"
 
-	fmt.Fprintf(buf, "[%s][%s][%d][%s:%d]%s||",
+	if entry.Tag != "" {
+		tag = entry.Tag
+	}
+
+	fmt.Fprintf(buf, "[%s][%s][%d][%s:%d]%s||msg=%s||",
 		entry.Level,
 		entry.Time.Format("2006-01-02T15:04:05.000Z07:00"),
 		gls.GoID(),
 		path.Base(entry.File),
 		entry.Line,
+		tag,
 		entry.Msg,
 	)
 

@@ -18,7 +18,8 @@ func bar(ctx context.Context) {
 
 func helloworld(ctx context.Context) {
 	hctx := log.WithContext(ctx, "hello", "world")
-	log.Info(hctx, "_hello_tag")
+	log.Info(hctx, "this is hello world")
+	log.Tag("__supernova").Info(hctx, "unknown world")
 }
 
 func main() {
@@ -28,5 +29,5 @@ func main() {
 	foo(mctx)
 	bar(mctx)
 	helloworld(mctx)
-	log.Info(mctx, "program exited")
+	log.Tag("__OK_TAG__").Info(mctx, "program exited")
 }
