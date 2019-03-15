@@ -20,10 +20,7 @@ func NewLogger(appenders ...Appender) *Logger {
 }
 
 func (logger *Logger) Tag(tag string) *TagLogger {
-	return &TagLogger{
-		Logger: logger,
-		Tag:    tag,
-	}
+	return newTagLogger(logger, tag)
 }
 
 func (logger *Logger) GetLevel() Level {
@@ -39,49 +36,35 @@ func (logger *Logger) Enabled(level Level) bool {
 }
 
 func (logger *Logger) Trace(ctx context.Context, msg string, keyvals ...interface{}) {
-	if logger.Enabled(LevelTrace) {
-		entry := logger.newEntry(ctx, LevelTrace, msg, keyvals)
-		logger.log(entry)
-	}
+	logger.log(ctx, LevelTrace, "", msg, keyvals)
 }
 
 func (logger *Logger) Debug(ctx context.Context, msg string, keyvals ...interface{}) {
-	if logger.Enabled(LevelDebug) {
-		entry := logger.newEntry(ctx, LevelDebug, msg, keyvals)
-		logger.log(entry)
-	}
+	logger.log(ctx, LevelDebug, "", msg, keyvals)
 }
 
 func (logger *Logger) Info(ctx context.Context, msg string, keyvals ...interface{}) {
-	if logger.Enabled(LevelInfo) {
-		entry := logger.newEntry(ctx, LevelInfo, msg, keyvals)
-		logger.log(entry)
-	}
+	logger.log(ctx, LevelInfo, "", msg, keyvals)
 }
 
 func (logger *Logger) Warning(ctx context.Context, msg string, keyvals ...interface{}) {
-	if logger.Enabled(LevelWarning) {
-		entry := logger.newEntry(ctx, LevelWarning, msg, keyvals)
-		logger.log(entry)
-	}
+	logger.log(ctx, LevelWarning, "", msg, keyvals)
 }
 
 func (logger *Logger) Error(ctx context.Context, msg string, keyvals ...interface{}) {
-	if logger.Enabled(LevelError) {
-		entry := logger.newEntry(ctx, LevelError, msg, keyvals)
-		logger.log(entry)
-	}
+	logger.log(ctx, LevelError, "", msg, keyvals)
 }
 
 func (logger *Logger) Fatal(ctx context.Context, msg string, keyvals ...interface{}) {
-	if logger.Enabled(LevelError) {
-		entry := logger.newEntry(ctx, LevelFatal, msg, keyvals)
-		logger.log(entry)
-	}
+	logger.log(ctx, LevelFatal, "", msg, keyvals)
 	os.Exit(-1)
 }
 
-func (logger *Logger) newEntry(ctx context.Context, level Level, msg string, keyvals []interface{}) *Entry {
+func (logger *Logger) log(ctx context.Context, level Level, tag, msg string, keyvals []interface{}) {
+	if level < logger.level {
+		return
+	}
+
 	if len(keyvals)%2 != 0 {
 		keyvals = append(keyvals, ErrMissingValue)
 	}
@@ -98,16 +81,13 @@ func (logger *Logger) newEntry(ctx context.Context, level Level, msg string, key
 	entry := &Entry{
 		Time:    time.Now(),
 		Level:   level,
+		Tag:     tag,
 		Msg:     msg,
 		KeyVals: keyvals,
 	}
 
-	return entry
-}
-
-func (logger *Logger) log(entry *Entry) {
 	var ok bool
-	_, entry.File, entry.Line, ok = runtime.Caller(3)
+	_, entry.File, entry.Line, ok = runtime.Caller(2)
 	if !ok {
 		entry.File = "???"
 		entry.Line = -1

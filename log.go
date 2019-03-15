@@ -52,26 +52,26 @@ func Tag(tag string) *TagLogger {
 }
 
 func Trace(ctx context.Context, msg string, keyvals ...interface{}) {
-	defaultLogger.Trace(ctx, msg, keyvals...)
+	defaultLogger.log(ctx, LevelTrace, "", msg, keyvals)
 }
 
 func Debug(ctx context.Context, msg string, keyvals ...interface{}) {
-	defaultLogger.Debug(ctx, msg, keyvals...)
+	defaultLogger.log(ctx, LevelDebug, "", msg, keyvals)
 }
 
 func Info(ctx context.Context, msg string, keyvals ...interface{}) {
-	defaultLogger.Info(ctx, msg, keyvals...)
+	defaultLogger.log(ctx, LevelInfo, "", msg, keyvals)
 }
 
 func Warning(ctx context.Context, msg string, keyvals ...interface{}) {
-	defaultLogger.Warning(ctx, msg, keyvals...)
+	defaultLogger.log(ctx, LevelWarning, "", msg, keyvals)
 }
 
 func Error(ctx context.Context, msg string, keyvals ...interface{}) {
-	defaultLogger.Error(ctx, msg, keyvals...)
+	defaultLogger.log(ctx, LevelError, "", msg, keyvals)
 }
 
 func Fatal(ctx context.Context, msg string, keyvals ...interface{}) {
-	defaultLogger.Fatal(ctx, msg, keyvals...)
+	defaultLogger.log(ctx, LevelFatal, "", msg, keyvals)
 	os.Exit(-1)
 }
