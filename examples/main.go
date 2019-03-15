@@ -35,4 +35,5 @@ func main() {
 	helloworld(mctx)
 	nomsg(mctx)
 	log.Tag("__OK_TAG__").Info(mctx, "program exited")
+	log.Tag("__OK_TAG__").Info(mctx, "program exited, haha")
 }
