@@ -12,19 +12,19 @@ import (
 )
 
 func foo(ctx context.Context) {
-	ctx = log.SetContext(ctx, "context", "foo")
+	ctx = log.WithContext(ctx, "context", "foo")
 
 	log.Info(ctx, "foo called")
 }
 
 func bar(ctx context.Context) {
-	ctx = log.SetContext(ctx, "context", "bar")
+	ctx = log.WithContext(ctx, "context", "bar")
 
 	log.Info(ctx, "bar called")
 }
 
 func main() {
-	ctx := log.SetContext(context.Background(), "module", "example")
+	ctx := log.WithContext(context.Background(), "module", "example")
 	log.Info(ctx, "program started")
 	foo(ctx)
 	bar(ctx)
