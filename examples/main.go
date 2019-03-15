@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"go/build"
 
 	"github.com/k81/log"
 )
@@ -36,4 +37,5 @@ func main() {
 	nomsg(mctx)
 	log.Tag("__OK_TAG__").Info(mctx, "program exited")
 	log.Tag("__OK_TAG__").Info(mctx, "program exited, haha")
+	log.Info(mctx, "get gopath", "GOPATH", build.Default.GOPATH)
 }

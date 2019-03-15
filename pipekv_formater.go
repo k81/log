@@ -3,13 +3,14 @@ package log
 import (
 	"bytes"
 	"fmt"
-	"path"
+	"go/build"
 
 	"github.com/modern-go/gls"
 )
 
 var (
 	PipeKVFormatter = &pipeKvFormatter{}
+	skipFileNameLen = len(build.Default.GOPATH) + 5
 )
 
 type pipeKvFormatter struct{}
@@ -26,7 +27,7 @@ func (l *pipeKvFormatter) Format(entry *Entry) (*bytes.Buffer, error) {
 		entry.Level,
 		entry.Time.Format("2006-01-02T15:04:05.000Z07:00"),
 		gls.GoID(),
-		path.Base(entry.File),
+		entry.File[skipFileNameLen:],
 		entry.Line,
 		tag,
 	)
