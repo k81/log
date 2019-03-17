@@ -34,7 +34,7 @@ func (level Level) String() string {
 }
 
 func (levelName LevelName) ToLevel() Level {
-	level := LevelInfo
+	level := LevelDebug
 	switch levelName {
 	case "TRACE":
 		level = LevelTrace
