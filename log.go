@@ -27,8 +27,8 @@ func GetLevel() Level {
 	return defaultLogger.GetLevel()
 }
 
-func SetLevel(level Level) Level {
-	return defaultLogger.SetLevel(level)
+func SetLevel(level Level) {
+	defaultLogger.SetLevel(level)
 }
 
 func Enabled(level Level) bool {
