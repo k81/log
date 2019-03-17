@@ -19,8 +19,8 @@ func GetLogger() *Logger {
 	return defaultLogger
 }
 
-func SetLevelByName(levelName LevelName) {
-	defaultLogger.SetLevel(levelName.ToLevel())
+func SetLevelByName(levelName string) {
+	defaultLogger.SetLevel(LevelName(levelName).ToLevel())
 }
 
 func GetLevel() Level {
