@@ -8,7 +8,7 @@ package main
 import (
 	"context"
 
-	"github.com/k81/log"
+	"github.com/std0d9k81/log"
 )
 
 func foo(ctx context.Context) {
